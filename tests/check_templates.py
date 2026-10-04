@@ -12,9 +12,9 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
-from pinit.generator import generate_project  # noqa: E402
-from pinit.models import ProjectConfig  # noqa: E402
-from pinit.templates import list_templates  # noqa: E402
+from polyinit.generator import generate_project  # noqa: E402
+from polyinit.models import ProjectConfig  # noqa: E402
+from polyinit.templates import list_templates  # noqa: E402
 
 OUTPUT = Path("generated")
 

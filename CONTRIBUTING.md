@@ -27,8 +27,8 @@ know it compiles and its tests pass. CI does this automatically.
 
 ## Adding a template
 
-Create a directory at `src/pinit/templates/<language>/<project-type>/`. No
-code change is needed; the prompt and `pinit run` pick it up from the
+Create a directory at `src/polyinit/templates/<language>/<project-type>/`. No
+code change is needed; the prompt and `polyinit run` pick it up from the
 filesystem.
 
 A few things to keep in mind:
@@ -49,6 +49,6 @@ A few things to keep in mind:
 
 ## Reporting bugs
 
-Open an issue with your pinit version (`pinit version`), your platform, and the
+Open an issue with your polyinit version (`polyinit version`), your platform, and the
 command you ran. If a generated project misbehaves, include the language and
 project type, since the templates differ substantially.

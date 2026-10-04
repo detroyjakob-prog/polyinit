@@ -2,7 +2,7 @@ from pathlib import Path
 
 import pytest
 
-from pinit.commands.run import (
+from polyinit.commands.run import (
     LANGUAGE_MANAGERS,
     _read_pyproject,
     detect_language,

@@ -9,8 +9,8 @@ from __future__ import annotations
 import pytest
 import questionary
 
-from pinit import ui
-from pinit.templates import available_languages, available_types
+from polyinit import ui
+from polyinit.templates import available_languages, available_types
 
 
 class FakeQuestion:
@@ -103,6 +103,24 @@ class TestChoiceSets:
         languages = prompt.calls[0]["choices"]
         assert len(languages) == len(available_languages())
 
+    def test_language_labels_are_properly_cased(self, fake_prompt):
+        prompt = fake_prompt(
+            {
+                "What language?": "Python",
+                "What type of project?": "CLI",
+                "Features:": [],
+            }
+        )
+
+        ui.ask_config("demo")
+
+        languages = prompt.calls[0]["choices"]
+
+        assert "JavaScript" in languages
+        assert "TypeScript" in languages
+        assert "Javascript" not in languages
+        assert "Typescript" not in languages
+
     def test_type_choices_match_the_selected_language(self, fake_prompt):
         prompt = fake_prompt(
             {
@@ -120,9 +138,12 @@ class TestChoiceSets:
     def test_every_offered_combination_has_a_template(self, fake_prompt):
         """A choice the prompt makes must be generatable."""
         for language in available_languages():
+            label = ui.LANGUAGE_LABELS.get(
+                language, language.capitalize()
+            )
             fake_prompt(
                 {
-                    "What language?": language.capitalize(),
+                    "What language?": label,
                     "What type of project?": ui.TYPE_LABELS[
                         available_types(language)[0]
                     ],

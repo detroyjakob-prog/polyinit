@@ -1,48 +1,48 @@
-# pinit
+# polyinit
 
 An interactive project generator for the terminal. One command, six languages,
 sensible defaults.
 
 ```bash
-pip install pinit
-pinit create
+pip install polyinit
+polyinit create
 ```
 
 ## Why
 
 Language-native scaffolders are excellent at their own language and useless at
 the other five. `cargo new` cannot make you a Go service, and `npm create`
-cannot make you a Rust library. pinit gives you a single interactive flow that
-spans every language you are likely to touch, with the same questions and the
-same layout each time.
+cannot make you a Rust library. polyinit gives you a single interactive flow
+that spans every language you are likely to touch, with the same questions and
+the same layout each time.
 
 ## Usage
 
-### `pinit create`
+### `polyinit create`
 
 Walks you through name, language, project type and features, shows a summary to
 confirm, then generates the project.
 
 ```bash
-pinit create                # ask for everything
-pinit create my-project     # skip the name prompt
+polyinit create                # ask for everything
+polyinit create my-project     # skip the name prompt
 ```
 
 The project type list is derived from the templates that actually ship, so
 every combination you can pick is one that will generate.
 
-### `pinit run`
+### `polyinit run`
 
 Runs the project in the current directory. It detects the language from the
 files present and picks the real entry point, rather than guessing.
 
 ```bash
-pinit run              # detect language, ask for runner
-pinit run python uv    # explicit language and runner
+polyinit run              # detect language, ask for runner
+polyinit run python uv    # explicit language and runner
 ```
 
 ```console
-$ pinit run
+$ polyinit run
 Running: python -m my_app.main
 Hello world from my-app!
 ```
@@ -50,16 +50,16 @@ Hello world from my-app!
 For a library, which has no entry point, it says so and points you at the tests
 instead of failing with a stack trace.
 
-### `pinit templates`
+### `polyinit templates`
 
 Lists every language and project type that ships with the installed version.
 
-### `pinit doctor`
+### `polyinit doctor`
 
 Checks your toolchain and verifies the installation. Useful when a template
 needs something you have not installed.
 
-### `pinit version`
+### `polyinit version`
 
 Prints the installed version.
 
@@ -81,7 +81,7 @@ pointing at a `tests/` directory that is not there.
 
 ## Adding a template
 
-Templates live in `src/pinit/templates/<language>/<project-type>/` and are
+Templates live in `src/polyinit/templates/<language>/<project-type>/` and are
 plain project directories. Drop one in and it appears in the prompts on the
 next run, with no code change.
 
@@ -97,7 +97,7 @@ Files and directory names can use two placeholders:
 
 Templates ship with every feature enabled and are valid projects on their own.
 Opting out of a feature removes it after rendering, which keeps templates
-usable by hand without running pinit.
+usable by hand without running polyinit.
 
 ## Development
 

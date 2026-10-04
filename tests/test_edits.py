@@ -1,7 +1,7 @@
 
 import pytest
 
-from pinit.edits import (
+from polyinit.edits import (
     collapse_empty_arrays,
     remove_paths,
     remove_toml_key,
@@ -291,9 +291,9 @@ class TestResultIsValidToml:
         """Each shipped Python template must stay valid with features off."""
         tomllib = pytest.importorskip("tomllib")
 
-        from pinit.generator import generate_project
-        from pinit.models import ProjectConfig
-        from pinit.templates import available_types
+        from polyinit.generator import generate_project
+        from polyinit.models import ProjectConfig
+        from polyinit.templates import available_types
 
         for project_type in available_types("python"):
             root = tmp_path / project_type

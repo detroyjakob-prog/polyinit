@@ -1,7 +1,7 @@
 [project]
-name = "pinit"
+name = "polyinit"
 dynamic = ["version"]
-description = "An interactive project generator for the terminal."
+description = "An interactive project generator for six languages."
 readme = "README.md"
 requires-python = ">=3.11"
 license = "MIT"
@@ -42,35 +42,35 @@ dev = [
 ]
 
 [project.scripts]
-pinit = "pinit.cli:app"
+polyinit = "polyinit.cli:app"
 
 [project.urls]
-Homepage = "https://github.com/jacob/pinit"
-Issues = "https://github.com/jacob/pinit/issues"
+Homepage = "https://github.com/jacob/polyinit"
+Issues = "https://github.com/jacob/polyinit/issues"
 
 [build-system]
 requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.dynamic]
-version = { attr = "pinit.__version__" }
+version = { attr = "polyinit.__version__" }
 
 [tool.setuptools.packages.find]
 where = ["src"]
 
 [tool.setuptools.package-data]
-pinit = ["templates/**/*"]
+polyinit = ["templates/**/*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-norecursedirs = ["src/pinit/templates", ".venv", "build", "dist"]
+norecursedirs = ["src/polyinit/templates", ".venv", "build", "dist"]
 
 [tool.ruff]
 line-length = 88
 src = ["src", "tests"]
 # Templates contain unrendered {{...}} placeholders, so they are not valid
-# Python or TOML until pinit generates a project from them.
-extend-exclude = ["src/pinit/templates"]
+# Python or TOML until polyinit generates a project from them.
+extend-exclude = ["src/polyinit/templates"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM"]

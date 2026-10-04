@@ -2,10 +2,10 @@ from pathlib import Path
 
 import pytest
 
-from pinit.features import features_for, supports
-from pinit.generator import generate_project, validate_project_name
-from pinit.models import ProjectConfig
-from pinit.templates import (
+from polyinit.features import features_for, supports
+from polyinit.generator import generate_project, validate_project_name
+from polyinit.models import ProjectConfig
+from polyinit.templates import (
     available_languages,
     available_types,
     get_template_dir,
