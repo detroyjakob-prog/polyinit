@@ -1,0 +1,136 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python-version: ["3.11", "3.12", "3.13"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+
+      - name: Lint
+        run: ruff check .
+
+      - name: Test
+        run: pytest -q
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Build distributions
+        run: |
+          python -m pip install --upgrade pip build
+          python -m build
+
+      - name: Verify templates ship in the wheel
+        run: |
+          python -m pip install twine
+          twine check dist/*
+          python - <<'PY'
+          import glob, zipfile
+          wheel = glob.glob("dist/*.whl")[0]
+          names = zipfile.ZipFile(wheel).namelist()
+          templates = [n for n in names if "/templates/" in n]
+          assert len(templates) > 50, f"only {len(templates)} template files"
+          print(f"{len(templates)} template files present in the wheel")
+          PY
+
+  generated-projects:
+    name: templates (${{ matrix.language }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [python, javascript, typescript, rust, go, markdown]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: actions/setup-go@v5
+        with:
+          go-version: stable
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install pinit
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+
+      - name: Generate every template
+        run: python -m tests.check_templates
+
+      - name: Python projects
+        if: matrix.language == 'python'
+        run: |
+          set -eux
+          for d in generated/python/*/; do
+            pip install -e "./$d[dev]"
+            (cd "$d" && pytest -q)
+          done
+
+      - name: JavaScript projects
+        if: matrix.language == 'javascript'
+        run: |
+          set -eux
+          for d in generated/javascript/*/; do
+            (cd "$d" && npm install --silent && npm test)
+          done
+
+      - name: TypeScript projects
+        if: matrix.language == 'typescript'
+        run: |
+          set -eux
+          for d in generated/typescript/*/; do
+            (cd "$d" && npm install --silent && npm run build && npm test)
+          done
+
+      - name: Rust projects
+        if: matrix.language == 'rust'
+        run: |
+          set -eux
+          for d in generated/rust/*/; do
+            (cd "$d" && cargo test --quiet)
+          done
+
+      - name: Go projects
+        if: matrix.language == 'go'
+        run: |
+          set -eux
+          for d in generated/go/*/; do
+            (cd "$d" && go build ./... && go test ./...)
+          done
+
+      - name: Document template
+        if: matrix.language == 'markdown'
+        run: test -f generated/markdown/document/README.md

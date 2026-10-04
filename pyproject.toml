@@ -1,0 +1,76 @@
+[project]
+name = "pinit"
+dynamic = ["version"]
+description = "An interactive project generator for the terminal."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+license-files = ["LICENSE"]
+keywords = [
+    "scaffolding",
+    "project-template",
+    "generator",
+    "cli",
+    "cookiecutter",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Software Development :: Code Generators",
+    "Topic :: Software Development :: Build Tools",
+    "Typing :: Typed",
+]
+dependencies = [
+    "questionary>=2.1.0",
+    "rich>=13.9.0",
+    "typer>=0.16.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "build>=1.2.0",
+    "pytest>=8.0.0",
+    "ruff>=0.6.0",
+    "twine>=5.1.0",
+]
+
+[project.scripts]
+pinit = "pinit.cli:app"
+
+[project.urls]
+Homepage = "https://github.com/jacob/pinit"
+Issues = "https://github.com/jacob/pinit/issues"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.dynamic]
+version = { attr = "pinit.__version__" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+pinit = ["templates/**/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+norecursedirs = ["src/pinit/templates", ".venv", "build", "dist"]
+
+[tool.ruff]
+line-length = 88
+src = ["src", "tests"]
+# Templates contain unrendered {{...}} placeholders, so they are not valid
+# Python or TOML until pinit generates a project from them.
+extend-exclude = ["src/pinit/templates"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
