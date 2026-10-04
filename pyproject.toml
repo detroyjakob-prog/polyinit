@@ -45,8 +45,8 @@ dev = [
 polyinit = "polyinit.cli:app"
 
 [project.urls]
-Homepage = "https://github.com/jacob/polyinit"
-Issues = "https://github.com/jacob/polyinit/issues"
+Homepage = "https://github.com/detroyjakob-prog/polyinit"
+Issues = "https://github.com/detroyjakob-prog/polyinit/issues"
 
 [build-system]
 requires = ["setuptools>=68"]
