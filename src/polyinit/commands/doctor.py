@@ -10,6 +10,8 @@ import typer
 from rich.console import Console
 from rich.table import Table
 
+from ..system import interpreter_for_venv
+
 console = Console()
 
 # Tools polyinit itself shells out to.
@@ -64,11 +66,21 @@ def doctor_command() -> None:
     """Check installed tools and validate the polyinit installation."""
     console.print("[bold cyan]polyinit doctor[/bold cyan]\n")
 
+    interpreter = interpreter_for_venv()
+
     environment = Table(title="Environment")
     environment.add_column("Item")
     environment.add_column("Value")
-    environment.add_row("python", _python_version())
     environment.add_row("polyinit", sys.executable)
+    environment.add_row(
+        "python",
+        _python_version() if not getattr(sys, "frozen", False) else
+        f"{_python_version()} (bundled)",
+    )
+    environment.add_row(
+        "venv capable",
+        interpreter or "no interpreter found",
+    )
     console.print(environment)
     console.print()
 

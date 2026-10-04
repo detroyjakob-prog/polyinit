@@ -54,8 +54,15 @@ def create_command(
         steps.extend(generate_project(config, root))
 
         if config.virtualenv:
-            create_virtualenv(root)
-            steps.append("Created virtual environment")
+            if create_virtualenv(root):
+                steps.append("Created virtual environment")
+            else:
+                console.print(
+                    "[yellow]Skipped the virtual environment:[/yellow] "
+                    "no Python interpreter found to create one with. "
+                    "Install Python and run "
+                    "[cyan]python -m venv .venv[/cyan] inside the project."
+                )
 
         if config.git:
             init_git(root)

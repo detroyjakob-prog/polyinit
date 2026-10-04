@@ -1,3 +1,5 @@
+import shutil
+import sys
 from pathlib import Path
 
 import pytest
@@ -7,6 +9,50 @@ from polyinit.commands.run import (
     _read_pyproject,
     detect_language,
 )
+from polyinit.system import create_virtualenv, interpreter_for_venv
+
+
+class TestVenvInterpreter:
+    def test_uses_sys_executable_when_not_frozen(self):
+        assert interpreter_for_venv() == sys.executable
+
+    def test_frozen_build_never_returns_the_binary(self, monkeypatch):
+        """A frozen sys.executable is polyinit, not a Python interpreter."""
+        monkeypatch.setattr(sys, "frozen", True, raising=False)
+        monkeypatch.setattr(sys, "executable", "/usr/local/bin/polyinit")
+        monkeypatch.setattr(shutil, "which", lambda name: None)
+
+        assert interpreter_for_venv() is None
+
+    def test_frozen_build_falls_back_to_path(self, monkeypatch):
+        monkeypatch.setattr(sys, "frozen", True, raising=False)
+        monkeypatch.setattr(sys, "executable", "/usr/local/bin/polyinit")
+        monkeypatch.setattr(
+            shutil, "which", lambda name: f"/usr/bin/{name}"
+        )
+
+        assert interpreter_for_venv() == "/usr/bin/python3"
+
+    def test_create_virtualenv_reports_failure(self, tmp_path, monkeypatch):
+        monkeypatch.setattr(
+            "polyinit.system.interpreter_for_venv", lambda: None
+        )
+
+        assert create_virtualenv(tmp_path) is False
+        assert not (tmp_path / ".venv").exists()
+
+    def test_create_virtualenv_uses_the_interpreter(
+        self, tmp_path, monkeypatch
+    ):
+        seen: list[list[str]] = []
+
+        monkeypatch.setattr(
+            "polyinit.system.run",
+            lambda command, cwd: seen.append(command),
+        )
+
+        assert create_virtualenv(tmp_path) is True
+        assert seen == [[sys.executable, "-m", "venv", ".venv"]]
 
 
 @pytest.mark.parametrize(
