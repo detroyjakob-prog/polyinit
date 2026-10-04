@@ -1,0 +1,39 @@
+name: Publish to PyPI
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    # Trusted Publishing: PyPI verifies this workflow's identity via the OIDC
+    # token minted below, so no API token is stored in GitHub. The publisher
+    # must be registered at pypi.org/manage/account/publishing with exactly
+    # these values, or the upload is rejected.
+    environment:
+      name: pypi
+      url: https://pypi.org/p/polyinit
+
+    permissions:
+      # Required: mints the OIDC token PyPI exchanges for an upload token.
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Build distributions
+        run: |
+          python -m pip install --upgrade pip build
+          python -m build
+
+      - name: Publish to PyPI
+        # Must stay pinned to the major ref below: PyPI's Trusted Publishing
+        # policy rejects publishing from an unpinned floating tag.
+        uses: pypa/gh-action-pypi-publish@release/v1

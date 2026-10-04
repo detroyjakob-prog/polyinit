@@ -7,13 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-10-04
+
+First release on PyPI. Install with `pip install polyinit`.
+
 ### Changed
 
 - Renamed from `pinit` to `polyinit`. The name `pinit` is already taken on PyPI
   by an unrelated Linux shortcut tool that installs the same `pinit` console
   script, so publishing under it would have been a direct conflict.
-
-## [0.3.0]
 
 ### Added
 
